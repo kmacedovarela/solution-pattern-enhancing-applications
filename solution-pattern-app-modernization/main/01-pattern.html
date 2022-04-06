@@ -51,7 +51,16 @@
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item is-current-page" data-depth="1">
+    <button class="nav-item-toggle"></button>
     <a class="nav-link" href="01-pattern.html">1. Solution Pattern: App Modernization</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#background">Background</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#challenges">Challenges and solutions</a>
+  </li>
+</ul>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="02-architecture.html">2. Architecture</a>
@@ -85,7 +94,104 @@
   <div class="content">
 <article class="doc">
 <h1 class="page">Solution Pattern: App Modernization</h1>
-
+<div class="sect1">
+<h2 id="background"><a class="anchor" href="#background"></a>Background</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Globex is a fictitious retail company. The company recently started a digital transformation and cloud adoption journey. As part of this initiative, the development and devops teams have completed the modernization of the existing multi-tier monolithic retail e-commerce web application. The monolithic application was split in a couple of loosely-coupled microservices and the application was rehosted on OpenShift.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/globex-appmod.png" alt="globex appmod" width="75%">
+</div>
+</div>
+<div class="paragraph">
+<p>The devops team also adopted GitOps practices for rapid and continuous deployment.</p>
+</div>
+<div class="paragraph">
+<p>The outcome of this application modernization effort is an increased velocity of application development and deployment, and an overall faster go to market for new functionalities.</p>
+</div>
+<div class="paragraph">
+<p>A schematic overview of the current state of the application after the first phase of the application modernization effort:</p>
+</div>
+<div class="imageblock unresolved">
+<div class="content">
+<img src="globex-phase1-3.png" alt="globex phase1 3" width="75%">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The application is split in microservices and runs on OpenShift. As such it inherits all the benefits of the de-facto enterprise Kubernetes distribution: horizontal scaling, automated rollout/rollback, bin-packing, self healing, service discovery, load balancing, etc.</p>
+</li>
+<li>
+<p>Adoption of GitOps practices decreases Lead Time for Change, Mean Time to Recover and Change Failure Rate while increasing Deployment Frequency</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Taking advantage of this new momentum, the business comes up with new requirements for the e-commerce application:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Multi-channel approach: includes a mobile application in addition to the retail web-site. Globex does not have the necessary expertise in mobile development, so development will have to be outsourced.</p>
+</li>
+<li>
+<p>The ability to track user activity on the website and the mobile application.</p>
+</li>
+<li>
+<p>Highlight products which generates most customer interest as featured products.</p>
+</li>
+<li>
+<p>Provide a personalized experience for users on the website and mobile application.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="challenges"><a class="anchor" href="#challenges"></a>Challenges and solutions</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>There are however a number of challenges with the new requirements:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Adding new channels remains difficult, with a high risk of tight coupling to the existing services, which would slow down development productivity and time to market.</p>
+</li>
+<li>
+<p>The existing services need to be managed and secured to allow access for external partners and development teams. Governance remains a challenge.</p>
+</li>
+<li>
+<p>Adoption of new technologies such as event streaming requires time and new skills, which are not readily available inside the company.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In order to cope with these challenges, the development team decides for a new approach.</p>
+</div>
+<div class="paragraph">
+<p><strong>API First approach</strong>: before tackling the development of new services, the API contract is formalized in a OpenAPI spec document. This API design phase is done collaboratively with all stakeholders.
+Once a first version of the OpenAPI spec document is ready, it is pushed and managed in a service registry, which acts a the system of truth.
+Mocks are created for the API.</p>
+</div>
+<div class="paragraph">
+<p><strong>Parallel Development</strong> streams. The API first approach enables parallel development streams. UUI development teams and other API consumers can start their development against the mocked APIs, without having to wait for an actual implementation.
+In parallel, backend development teams can implement the APIs using modern cloud-native frameworks. They continuously test the implementation against the OpenAPI spec to ensure that th implementation does not beak the contract.</p>
+</div>
+<div class="paragraph">
+<p><strong>Manage and Secure the APIs</strong>. An API management platform allows to expose the APIs in a secure and managed manner for access by the mobile app and other party applications.</p>
+</div>
+<div class="paragraph">
+<p>Adoption of <strong>Apache Kafka</strong> as streaming platform to ingest and process user activity event streams.</p>
+</div>
+<div class="paragraph">
+<p>A preference for <strong>managed cloud services</strong> for an easy and rapid adoption of new middleware components like the API Management platform and Apache Kafka. This allows the teams to focus on the business requirements, without the need to invest in skills and infrastructure to deploy and maintain these components.</p>
+</div>
+</div>
+</div>
 <nav class="pagination">
   <span class="prev"><a href="index.html">Solution Pattern: App Modernization</a></span>
   <span class="next"><a href="02-architecture.html">2. Architecture</a></span>
