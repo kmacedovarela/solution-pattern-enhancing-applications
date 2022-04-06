@@ -134,9 +134,164 @@
   <div class="content">
 <article class="doc">
 <h1 class="page">Demo / Walkthrough</h1>
-<div id="demo" class="videoblock">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Here you find a recorded video of the solution pattern, as well as a walkthrough guide through the differents aspects of the solution pattern.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="demo"><a class="anchor" href="#demo"></a>Recorded demo</h2>
+<div class="sectionbody">
+<div class="videoblock">
 <div class="content">
 <iframe width="800" height="480" src="https://www.youtube.com/embed/3yULVMdqJ98?rel=0" frameborder="0" allowfullscreen></iframe>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="demowalkthrough"><a class="anchor" href="#demowalkthrough"></a>Demo Walkthrough</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_prerequisites"><a class="anchor" href="#_prerequisites"></a>Prerequisites:</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Access to an OpenShift environment, preferably with <code>cluster-admin</code> privileges.</p>
+</li>
+<li>
+<p><code>oc</code> OpenShift CLI</p>
+</li>
+<li>
+<p><code>helm</code> Helm CLI</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_1_api_first_approach"><a class="anchor" href="#_1_api_first_approach"></a>1. API First approach</h3>
+<div class="sect3">
+<h4 id="_1_1_api_design_with_apicurio_studio"><a class="anchor" href="#_1_1_api_design_with_apicurio_studio"></a>1.1 API Design with Apicurio Studio</h4>
+<div class="paragraph">
+<p>Apicurio Studio  is an environment which allows to collaboratively work on API specifications. It can be installed on OpenShift, but for this demo we use the <a href="https://studio-auth.apicur.io">free hosted version of Apicurio Studio</a>.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>In a browser window, navigate to <a href="https://studio-auth.apicur.io" class="bare">https://studio-auth.apicur.io</a>.</p>
+</li>
+<li>
+<p>Register as a new user, or log in in using your Github or Google account.<br>
+You are redirected to the dashboard page. From here you can create a new API. You can also import an existing API from e.g. GitHub.</p>
+</li>
+<li>
+<p>On the dashboard page, select <strong>Import API</strong> from the <strong>Create new API</strong> drop-down box.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/03/apicurio-import-api.png" alt="apicurio import api">
+</div>
+</div>
+</li>
+<li>
+<p>On the <strong>Import API</strong> page, set the <strong>Import Type</strong> to <strong>Import From Source Control</strong>. Enter <code><a href="https://github.com/globex-recommendation/catalog-service-api/blob/main/openapi/openapi-spec.yml" class="bare">https://github.com/globex-recommendation/catalog-service-api/blob/main/openapi/openapi-spec.yml</a></code> in the <strong>Url</strong> text box. Click <strong>Import API</strong>.</p>
+</li>
+<li>
+<p>You are redirected to the <code>Product Catalog API</code> front page. This the OpenAPI spec document which describes the API to the <strong>Catalog Service</strong> of the Globex retail application.<br>
+Click <strong>Edit API</strong> to open the API Editor.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/03/apicurio-edit-api.png" alt="apicurio edit api">
+</div>
+</div>
+</li>
+<li>
+<p>Navigate within the editor to inspect the different paths, data types and reusable responses that make up the API definition. You can switching between the graphical editor and the source code editor by selecting the <strong>Design</strong> ot the <strong>Source</strong> tab.</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>In a real-world scenario you would do the inverse: start with an empty API specification, and define the different elements of the spec document. You then export the spec in JSON or YAML format (by copying the contents from the source editor) to your local file system and push it to version control.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_1_2_api_mocking_with_microcks"><a class="anchor" href="#_1_2_api_mocking_with_microcks"></a>1.2 API mocking with Microcks</h4>
+<div class="paragraph">
+<p>API mocking allows for parallel streams of development. Developer teams that need to build applications that consume the API don&#8217;t need to wait until the implementation of the API is finished, but can develop against API mocks that return pre-canned responses.</p>
+</div>
+<div class="paragraph">
+<p>Microcks is a web-based tool which exposes mocks based on a variety of sources, including OpenAPI spec documents. Refer to the <a href="https://microcks.io">Microcks web site</a> for more information.</p>
+</div>
+<div class="paragraph">
+<p>Microcks needs to be installed on your OpenShift cluster. The easiest way to do this is through the Microcks operator which is available through OperatorHub. This requires cluster admin access. If you don&#8217;t have cluster admin access, refer to the Microcks installation documentation for alternative installation methods.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Clone the <a href="https://github.com/globex-recommendation/catalog-service-api" class="bare">https://github.com/globex-recommendation/catalog-service-api</a> repository to your workstation. This repo contains the Calatog Service OpenAPI spec in the <code>openapi</code> folder.</p>
+</li>
+<li>
+<p>On the OpenShift cluster, create the <code>microcks</code> namespace.</p>
+</li>
+<li>
+<p>From the OperatorHub page in the OpenShift web console, install the Microcks operator in the <code>microcks</code> namespace (The operator does not support cluster-wide installation mode).</p>
+</li>
+<li>
+<p>Deploy a <code>MicrocksInstall</code> Custom Resource. The Microcks project provides a minimal Custom Resource which is sufficient for this demo.</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">OPENSHIFT_DOMAIN=$(oc get ingresscontroller default -n openshift-ingress-operator --template='{{.status.domain}}')
+curl https://microcks.io/operator/minikube-minimal.yaml -s | sed "s/KUBE_APPS_URL/${OPENSHIFT_DOMAIN}/g" | oc apply -n microcks -f -</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Once the Microcks pods are running, the Microcks console can be reached at <a href="https://microcks.$OPENSHIFT_DOMAIN" class="bare">https://microcks.$OPENSHIFT_DOMAIN</a>. Log in with <code>admin/microcks123</code></p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/03/microcks-dashboard.png" alt="microcks dashboard">
+</div>
+</div>
+</li>
+<li>
+<p>Microcks provides several ways to import assets for mocking, including uploading an OpenAPI spec document.<br>
+On the dashboard, click the <strong>Importers</strong> button, and on the <strong>Import Jobs</strong> page, click <strong>Upload</strong>.</p>
+</li>
+<li>
+<p>Browse to the <code>openapi-spec.yml</code> file in the <code>openapi</code> folder of the GitHub project you cloned before and click <strong>Upload</strong> to upload the document.</p>
+</li>
+<li>
+<p>On the <strong>APIs|Services</strong> page, click on the <strong>Product Catalog API</strong> link to open the service page.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/03/microcks-service.png" alt="microcks service">
+</div>
+</div>
+</li>
+<li>
+<p>Microcks automatically created a number of mocks based on the examples defined in the OpenAPI spec document for the different paths. Click on the path name to inspect the mocks. Every mock has a unique URL and a pre-determined response.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/03/microcks-mock.png" alt="microcks mock">
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
 </div>
 </div>
 <nav class="pagination">
