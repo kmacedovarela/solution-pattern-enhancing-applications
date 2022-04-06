@@ -234,7 +234,7 @@ Which can then be later used to mock out those services.</p>
 <div class="sect2">
 <h3 id="service-registry"><a class="anchor" href="#service-registry"></a>Service Registry</h3>
 <div class="paragraph">
-<p>Once the API design s complete, and we have the first version of the API, this can now be published  in a schema registry.
+<p>Once the API design is complete, and we have the first version of the API, this can now be published  in a schema registry.
 Red Hat  OpenShift Service Registry allows us to publish the OpenAPIs, makes it accessible, and manages the OpenAPI from within the Red Hat’s cloud console</p>
 </div>
 <div class="imageblock">
@@ -244,7 +244,7 @@ Red Hat  OpenShift Service Registry allows us to publish the OpenAPIs, makes it 
 <div class="title">Figure 4. Red Hat OpenShift Service Registry</div>
 </div>
 <div class="paragraph">
-<p>You can upload new artefacts, new vesions,  view the metadata, download the specs, view documentation and view the content as well.
+<p>You can upload new artifacts, new versions,  view the metadata, download the specs, view documentation and view the content as well.
 Through Content rules one can validate new versions of the APIs against the existing specs to ensure validity and backward compatibility.</p>
 </div>
 </div>
@@ -263,7 +263,7 @@ Through Content rules one can validate new versions of the APIs against the exis
 <div class="title">Figure 5. Microcks</div>
 </div>
 <div class="paragraph">
-<p>Each of the mocls that are created out of the OpenAPI&#8217;s examples   has its own URL which can be invoked to provide a realistic response. This allows front end and mobile app developers to develop against the OpenAPIs specs without waiting for the final implementation of the backend services.</p>
+<p>Each of the mocks that are created out of the OpenAPI&#8217;s examples   has its own URL which can be invoked to provide a realistic response. This allows front end and mobile app developers to develop against the OpenAPIs specs without waiting for the final implementation of the backend services.</p>
 </div>
 </div>
 <div class="sect2">
@@ -272,7 +272,7 @@ Through Content rules one can validate new versions of the APIs against the exis
 <p>We use the managed <strong>Red Hat OpenShift API Management</strong> platform here to publish, manage and secure the backend APIs.</p>
 </div>
 <div class="paragraph">
-<p>Each API can be configured to be secured using a number of ways. In this case, the APIs  are secured with an API keys which will be passed through http request header. The OpenShift API Management platform allows you to have various application plans. Developers can subscribe to those APIs and can access APIs through an assigned API key  securely.  You can monitor the APIs and also track usage</p>
+<p>Each API can be configured to be secured using a number of ways. In this case, the APIs  are secured with an API key which should be passed through http request header. The OpenShift API Management platform allows you to have various application plans. Developers can subscribe to those APIs and can access APIs through an assigned API key  securely.  You can monitor the APIs and also track usage</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -305,7 +305,7 @@ Through Content rules one can validate new versions of the APIs against the exis
 <p>Red Hat OpenShift Streams for Apache Kafka  is a fully hosted and managed Kafka cloud service. This serves the requirement of Globex who did not want to install and maintain a streaming platform. This service can be very easily consumed and used by developers.</p>
 </div>
 <div class="paragraph">
-<p>There are a number of topocs created for Globex.  The globex.tracking topic is one which ingests the activity events. This is then consumed by the Recommendation Engine which is a Kafka Streams application which then builds a list of Top 10 most popular products with most user interest.</p>
+<p>There are a number of topics created for Globex.  The globex.tracking topic is one which ingests the activity events. This is then consumed by the Recommendation Engine which is a Kafka Streams application which then builds a list of Top 10 most popular products with most user interest.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -338,8 +338,7 @@ Through Content rules one can validate new versions of the APIs against the exis
 <div class="title">Figure 11. Globex App Home Page</div>
 </div>
 <div class="paragraph">
-<p>The featured projects are diplayed as a carousel in the page displaying the paginated list of products. Visitors can  drill down to view product details,
-sdd to the cart, view and edit catt, and also <em>like</em> their favourite products</p>
+<p>The featured projects are displayed as a carousel in the page displaying the paginated list of products. Visitors can  drill down to view product details, add products to the cart, view and edit catt, and also <em>like</em> their favourite products</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -364,7 +363,7 @@ Kafdrop is a tool through which you can view this continuous stream of events. K
 <div class="title">Figure 13. Kafdrop</div>
 </div>
 <div class="paragraph">
-<p>The Kafka streams application creates a number of other topics for data aggreation, and pushes the aggregated products list as events into the product-score-aggreated topic</p>
+<p>The Kafka streams application creates a number of other topics for data aggregation, and pushes the aggregated products list as events into the product-score-aggreated topic</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -379,24 +378,24 @@ Kafdrop is a tool through which you can view this continuous stream of events. K
 <h2 id="deploymentarchitecture"><a class="anchor" href="#deploymentarchitecture"></a>Deployment Architecture</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The various components of the application runs on various footprints.</p>
+<p>The various components of the application run on various footprints.</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>API Curio is a free hosted developer tool access throught <a href="https://studio.apicur.io/" class="bare">https://studio.apicur.io/</a></p>
+<p>Apicurio is a free hosted developer tool accessed through <a href="https://studio.apicur.io/" class="bare">https://studio.apicur.io/</a></p>
 </li>
 <li>
-<p>The various backend services are deployed as containers on Red Hat OpenShift Container Platform running on public cloud. Microcks and kafdrop tools are also deployed on OpenShift Container Platform. The UI itself is an Angular app which runs on NodeJS and deployed on the same  OpenShift platform.</p>
+<p>The various backend services are deployed as containers on Red Hat OpenShift Container Platform running on a public cloud. Microcks and Kafdrop tools are also deployed on OpenShift Container Platform. The UI itself is an Angular app which runs on NodeJS and deployed on the same  OpenShift platform.</p>
 </li>
 <li>
-<p>Managed Red Hat OpenShift Streams for Apache Kafka and Red Hat OpenShift Service Registry are deployed and accessed as fully managed services somewhere in the cloud and accessed throught Red Hat Console</p>
+<p>Managed Red Hat OpenShift Streams for Apache Kafka and Red Hat OpenShift Service Registry are deployed and accessed as fully managed services somewhere in the cloud and accessed through Red Hat Console</p>
 </li>
 <li>
 <p>Red Hat OpenShift API Management is running on OpenShift Dedicated deployed on allows</p>
 </li>
 <li>
-<p>The <a href="https://quay.io/" class="bare">https://quay.io/</a> is a hosted conatiners repository which stored the container images for the backend and UI application.</p>
+<p>The <a href="https://quay.io/" class="bare">https://quay.io/</a> is a hosted containers repository which stores the container images for the backend and UI application.</p>
 </li>
 </ul>
 </div>
