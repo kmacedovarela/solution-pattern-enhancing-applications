@@ -90,7 +90,16 @@
 </ul>
   </li>
   <li class="nav-item is-current-page" data-depth="1">
+    <button class="nav-item-toggle"></button>
     <a class="nav-link" href="03-demo.html">3. Demo / Walkthrough</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#demo">Recorded Demo</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="#demowalktrough">Demo Walkthrough</a>
+  </li>
+</ul>
   </li>
   <li class="nav-item" data-depth="1">
     <a class="nav-link" href="04-workshop.html">4. Workshop</a>
@@ -137,7 +146,7 @@
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Here you find a recorded video of the solution pattern, as well as a walkthrough guide through the differents aspects of the solution pattern.</p>
+<p>Here you find a recorded video of the solution pattern, as well as a walkthrough guide through the different aspects of the solution pattern.</p>
 </div>
 </div>
 </div>
@@ -160,6 +169,9 @@
 <ul>
 <li>
 <p>Access to an OpenShift environment, preferably with <code>cluster-admin</code> privileges.</p>
+</li>
+<li>
+<p>A Red Hat account</p>
 </li>
 <li>
 <p><code>oc</code> OpenShift CLI</p>
@@ -291,6 +303,76 @@ On the dashboard, click the <strong>Importers</strong> button, and on the <stron
 </ol>
 </div>
 </div>
+<div class="sect3">
+<h4 id="_1_3_publishing_and_managing_apis_with_service_registry"><a class="anchor" href="#_1_3_publishing_and_managing_apis_with_service_registry"></a>1.3 Publishing and managing APIs with Service Registry</h4>
+<div class="paragraph">
+<p>Once a first version of the API specification is ready to be socialized, it can be published in a schema registry, from where other teams can search and find it.</p>
+</div>
+<div class="paragraph">
+<p>OpenShift Service Registry is a managed cloud service which provides you with an instance of a schema registry, where you can store and manage different kind of schemas, including OpenAPI spec documents and Avro and Protobuf schemas.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The next steps will show you how to upload schema artifacts through the <a href="https://console.redhat.com">console.redhat.com</a> UI. In a more realistic scenario this would be done automatically using the Service Registry REST API as part of a CI/CD pipeline: every time a new version is pushed to source control, a CI/CD pipeline kicks in which publishes the new version in Service Registry.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Navigate to <a href="https://console.redhat.com">console.redhat.com</a> and log in with your Red Hat ID and credentials.</p>
+</li>
+<li>
+<p>On the <a href="https://console.redhat.com">console.redhat.com</a> landing page, select <strong>Application Services</strong> from the menu on the left.</p>
+</li>
+<li>
+<p>On the Application Services landing page, select <strong>Service Registry → Service Registry instances</strong>.</p>
+</li>
+<li>
+<p>On the Service Registry overview page, click the <strong>Create Service Registry instance</strong> button. Enter a unique name like <code>globex-service-registry</code> and click <strong>Create</strong> to start the creation process for your Service Registry instance.</p>
+</li>
+<li>
+<p>The new Service Registry instance is listed in the instances table. After a couple of seconds, your instance should be marked as ready.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/03/service-registry-instance.png" alt="service registry instance">
+</div>
+</div>
+</li>
+<li>
+<p>In the Service Registry instances page of the web console, select the Service Registry instance that you want to upload a schema to.</p>
+</li>
+<li>
+<p>Click <strong>Upload artifact</strong> and complete the form to define the schema details. To upload the Product Catalog API specification, browse to the <code>openapi-spec.yml</code> file in the <code>openapi</code> folder of the GitHub project you cloned before.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/03/service-registry-upload-artifact.png" alt="service registry upload artifact">
+</div>
+</div>
+</li>
+<li>
+<p>Once the artifact is uploaded, it can be retrieved from the <a href="https://console.redhat.com">console.redhat.com</a> UI ot through the Service Registry REST API. Validity and compatibility rules can be defined on a per-artifact or global level.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/03/service-registry-artifact.png" alt="service registry artifact">
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_2_managed_apache_kafka_cloud_service"><a class="anchor" href="#_2_managed_apache_kafka_cloud_service"></a>2. Managed Apache Kafka Cloud Service</h3>
+
 </div>
 </div>
 </div>
