@@ -163,6 +163,9 @@
 <div class="sect1">
 <h2 id="demowalkthrough"><a class="anchor" href="#demowalkthrough"></a>Demo Walkthrough</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>This section shows you how you can set up the different parts of the solution pattern, so that you can walk through the demo.</p>
+</div>
 <div class="sect2">
 <h3 id="_prerequisites"><a class="anchor" href="#_prerequisites"></a>Prerequisites:</h3>
 <div class="ulist">
@@ -372,7 +375,190 @@ On the dashboard, click the <strong>Importers</strong> button, and on the <stron
 </div>
 <div class="sect2">
 <h3 id="_2_managed_apache_kafka_cloud_service"><a class="anchor" href="#_2_managed_apache_kafka_cloud_service"></a>2. Managed Apache Kafka Cloud Service</h3>
-
+<div class="paragraph">
+<p>OpenShift Streams for Apache Kafka is a managed cloud service that enables you to add Kafka data-streaming functionality in your applications without having to install, configure, run, and maintain your own Kafka clusters.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The following paragraph will guide you through the setup of a managed Kafka instance through the <a href="https://console.redhat.com">console.redhat.com</a> UI.
+Red Hat also offers a CLI (<code>rhoas</code>) which allows to create and configure a managed Kafka instance though the command line.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Navigate to <a href="https://console.redhat.com">console.redhat.com</a> and log in with your Red Hat ID and credentials.</p>
+</li>
+<li>
+<p>On the <a href="https://console.redhat.com">console.redhat.com</a> landing page, select <strong>Application Services</strong> from the menu on the left.</p>
+</li>
+<li>
+<p>On the Application Services landing page, select <strong>Streams for Apache Kafka → Kafka Instances</strong>.</p>
+</li>
+<li>
+<p>On the Kafka Instances overview page, click the <strong>Create Kafka</strong> instance button. Enter a unique name and select the relevant <em>Cloud region</em> for your Kafka instance and click <strong>Create instance</strong>. This starts the provisioning process for your Kafka instance.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Your Red Hat account entitles you to one Kafka instance free of charge. This Kafka instance will stay available for 48 hrs.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>When the instance <em>Status</em> is <em>Ready</em>, you can start using the Kafka instance.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><strong>Create a Service Account</strong></p>
+</div>
+<div class="paragraph">
+<p>To connect applications or services to a Streams for Apache Kafka instance, you need to create a service account.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>On the <strong>Kafka Instances</strong> overview page, select the <strong>Options</strong> icon (the three dots) for the Kafka instance you just created. Select <strong>View connection information</strong>.</p>
+</li>
+<li>
+<p>Copy the <strong>Bootstrap server</strong> endpoint to a secure location. You will need this when connecting to your Kafka instance.</p>
+</li>
+<li>
+<p>Click <strong>Create service account</strong> to set up the service account. Enter a unique service account name and an optional description, and click <strong>Create</strong>.</p>
+</li>
+<li>
+<p>Copy the generated <strong>Client ID</strong> and <strong>Client Secret</strong> to a secure location. These are the credentials that you&#8217;ll use to connect to this Kafka instance.</p>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The generated credentials are displayed only one time, so ensure that you&#8217;ve successfully and securely saved the copied credentials before closing the credentials window.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>After saving the generated credentials, select the confirmation check box and close the Credentials window.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><strong>Set Permissions for a Service Account</strong></p>
+</div>
+<div class="paragraph">
+<p>After you creating a service account to connect to a Kafka instance, you must also set the appropriate level of access for that new account in the Access Control List (ACL) of the Kafka instance. Streams for Apache Kafka uses ACLs provided by Kafka that enable you to manage how other user accounts and service accounts are permitted to interact with the Kafka resources that you create.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>On the <strong>Kafka Instances</strong> page, click the name of the Kafka instance you previously created.</p>
+</li>
+<li>
+<p>Click the <strong>Access</strong> tab to view the current ACL for this instance.</p>
+</li>
+<li>
+<p>Click <strong>Manage access</strong>, use the <strong>Account</strong> drop-down menu to select the service account that you previously created, and click <strong>Next</strong>.</p>
+</li>
+<li>
+<p>Under <strong>Assign Permissions</strong>, use the drop-down menus to set the permissions shown in the following table for this service account. Click <strong>Add</strong> to add each new resource permission.</p>
+<div class="paragraph">
+<p>These permissions enable applications associated with the service account to create and delete topics in the instance, to produce and consume messages in any topic in the instance, and to use any consumer group and any producer.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. ACL permissions for a new service account</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Resource type</p></th>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Resource identifier and value</p></th>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Access type</p></th>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Operation</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Topic</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Is</code> = <code>*</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Allow</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>All</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Consumer group</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Is</code> = <code>*</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Allow</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Read</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Transactional ID</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Is</code> = <code>*</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Allow</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>All</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="imageblock">
+<div class="content">
+<img src="_images/03/rhosak-access-serviceaccount.png" alt="rhosak access serviceaccount">
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><strong>Create a Kafka Topic in OpenShift Streams for Apache Kafka</strong></p>
+</div>
+<div class="paragraph">
+<p>The activity tracking functionality of the Globex retail web-site application uses a Kafka topic to store the events generated by the user activity on the web site. This topic needs to be created ahead of time.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>In the <strong>Kafka Instances</strong> page of the web console, click the name of the Kafka instance that you want to add a topic to.</p>
+</li>
+<li>
+<p>Select the <strong>Topics</strong> tab, click <strong>Create topic</strong>, and follow the guided steps to define the topic details. Click <strong>Next</strong> to complete each step and click <strong>Finish</strong> to complete the setup.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Topic name</strong>: <code>globex-tracking</code>.</p>
+</li>
+<li>
+<p><strong>Partitions</strong>: <code>1</code></p>
+</li>
+<li>
+<p><strong>Message retention</strong>: Keep the defaults.</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
 </div>
 </div>
 </div>
