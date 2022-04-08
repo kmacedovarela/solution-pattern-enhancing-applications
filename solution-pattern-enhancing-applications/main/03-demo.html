@@ -560,6 +560,143 @@ Red Hat also offers a CLI (<code>rhoas</code>) which allows to create and config
 </ol>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_3_inner_development_loop"><a class="anchor" href="#_3_inner_development_loop"></a>3. Inner Development Loop</h3>
+<div class="paragraph">
+<p>The inner development loop is the single developer workflow, where a developer works on a piece of functionality or a bug fix in an application. The developer typically writes code on an IDE on his laptop, tests the code locally and debugs if necessary, all this in an iterative fashion. Once the piece of functionality is deemed ready, the developer pushes the changes into the source control system. That&#8217;s where the outer loop kicks in. In the outer loop the code is built, integration tests are run, container images are built and deployed to the target container platform.</p>
+</div>
+<div class="paragraph">
+<p>One of the major challenges developers face in the inner loop, is the management of dependencies. Almost every application, monolithic or based on microservices, has one or more services it depends on, like a database or a messaging platform. In the case of microservices, a service can also depend on other services. So even when developing locally, those dependencies must somehow be  available to the developer.</p>
+</div>
+<div class="paragraph">
+<p>Several approaches are possible to tackle this problem: use Docker or Docker Compose to run the dependencies locally, or spin up a local Kubernetes cluster with Minikube or Kind and deploy the services in that local Kubernetes cluster. Or you can try to mock up all the dependent services. Some frameworks like Quarkus have taken it a step further and support the automatic provisioning of containerized services like a database or a Kafka cluster in development and test mode.</p>
+</div>
+<div class="paragraph">
+<p>An alternative is to deploy the dependencies on a remote OpenShift cluster, and develop locally while pointing the application under development to the dependent services running on OpenShift.</p>
+</div>
+<div class="paragraph">
+<p>Our example uses a Helm chart to easily deploy all the components of the Globex retail application to OpenShift. For the services that rely on Kafka, we&#8217;ll use the managed Kafka instance we created earlier.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Clone the <a href="https://github.com/globex-recommendation/globex-recommendation-helm" class="bare">https://github.com/globex-recommendation/globex-recommendation-helm</a> repository to your workstation. This repo contains helm charts for the different components of the Globex retail web application.</p>
+</li>
+<li>
+<p>Create a file <code>values.yaml</code> in the root of the project. Set the content of the file to:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kafka:
+  bootstrapServer: &amp;kafka-bootstrap &lt;kafka bootstrap server&gt;
+  userId: &amp;kafka-user-id &lt;service account user id&gt;
+  password: &amp;kafka-user-secret &lt;service account user secret&gt;
+
+recommendation-engine:
+  kafka:
+    bootstrapServer: *kafka-bootstrap
+    userId: *kafka-user-id
+    password: *kafka-user-secret
+
+activity-tracking:
+  kafka:
+    bootstrapServer: *kafka-bootstrap
+    userId: *kafka-user-id
+    password: *kafka-user-secret</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Replace the <code>&lt;kafka bootstrap server&gt;</code> placeholder with the bootstrap address of the managed Kafka instance, and <code>&lt;service account user id&gt;</code> and <code>&lt;service account user secret&gt;</code> with the user ID and the user secret of the service account you created for the managed Kafka instance.</p>
+</div>
+</li>
+<li>
+<p>Create a namespace in OpenShift for the deployment:</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc create namespace globex-dev</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Deploy the application with Helm:</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">helm install --dependency-update -n globex-dev -f values.yaml globex globex</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Check the deployment progress on the Openshift console. Once all the pods are deployed, the topology in the Developer perspective of the <code>globex-dev</code> namespace should look like:</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/03/globex-developer-perspective-topology.png" alt="globex developer perspective topology">
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s say that as a developer you need to work on the <strong>Activity Tracking Service</strong>. This service exposes a REST endpoint for posting user activity events. These events are sent to the <code>globex.tracking</code> Kafka topic.</p>
+</div>
+<div class="paragraph">
+<p>The developer workflow would look like:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Clone the <a href="https://github.com/globex-recommendation/activity-tracking-service" class="bare">https://github.com/globex-recommendation/activity-tracking-service</a> repository to your workstation. This repository contains the code of the Activity Tracking Service and uses Quarkus.</p>
+</li>
+<li>
+<p>Import the code in your favorite IDE</p>
+</li>
+<li>
+<p>The Activity Tracking Service has a dependency on the Kafka broker. So the local copy of the application needs to be configured to point to the managed Kafka instance you created earlier. One way to do so is to add the connection details to the <code>dev</code> profile properties in <code>src/main/resources/application.properties</code>.<br>
+An alternative is to create an <code>.env</code> file in the root of the project, which will be picked up when running the application in dev mode. The advantage is less risk of committing this file (which contains connection credentials) to source control.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Create a file called <code>.env</code> in the root of the project.</p>
+</li>
+<li>
+<p>Set the contents of the file to:</p>
+<div class="listingblock">
+<div class="content">
+<pre>mp.messaging.outgoing.tracking-event.bootstrap.servers=&lt;kafka bootstrap server&gt;
+mp.messaging.outgoing.tracking-event.topic=globex.tracking
+
+mp.messaging.connector.smallrye-kafka.security.protocol=SASL_SSL
+mp.messaging.connector.smallrye-kafka.sasl.mechanism=PLAIN
+
+mp.messaging.connector.smallrye-kafka.sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required \
+  username="&lt;service account user id&gt;" \
+  password="&lt;service account user secret&gt;" ;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Replace the <code>&lt;kafka bootstrap server&gt;</code> placeholder with the bootstrap address of the managed Kafka instance, and <code>&lt;service account user id&gt;</code> and <code>&lt;service account user secret&gt;</code> with the user ID and the user secret of the service account you created for the managed Kafka instance.</p>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>From a terminal window, start the application in dev mode:</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">mvn quarkus:dev</code></pre>
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/03/quarkus-dev-mode.png" alt="quarkus dev mode">
+</div>
+</div>
+<div class="paragraph">
+<p>Quarkus dev mode supports live-reload of the application code. So when you change the code, it is automatically reloaded when you do a HTTP call to the application - no need to continuously start and stop the application. Other benefits include opening a port for attaching a debugger, continuous testing and the Dev UI available at <code>/q/dev</code>.</p>
+</div>
+</li>
+</ol>
+</div>
+</div>
 </div>
 </div>
 <nav class="pagination">
